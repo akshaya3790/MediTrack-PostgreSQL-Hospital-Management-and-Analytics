@@ -1,0 +1,25 @@
+{
+  "name": "hms-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "node --test --test-concurrency=1 test/validation.test.js test/auth.test.js test/access.test.js test/departments.test.js",
+    "create-admin": "node scripts/create-admin.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.1",
+    "express-session": "^1.18.1",
+    "nodemailer": "^6.10.1",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}

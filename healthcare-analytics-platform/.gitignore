@@ -1,0 +1,6 @@
+node_modules/
+.env
+__pycache__/
+.pytest_cache/
+# Trained models are versioned by folder name (time + dataset hash); keep them out of git
+ml/artifacts/*/

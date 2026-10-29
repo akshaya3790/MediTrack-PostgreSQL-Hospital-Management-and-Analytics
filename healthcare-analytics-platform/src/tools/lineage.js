@@ -1,0 +1,37 @@
+// Where each analytics table gets its data from. Stored in analytics_meta.lineage by db:init
+// and shown in docs/data-lineage.md.
+const LINEAGE = [
+  ['analytics_raw.appointment', 'public.appointment', 'Read in a read-only snapshot; doctor email replaced by a doctor key'],
+  ['analytics_raw.appointment_patient', 'public.patientsattendappointments', 'Patient email replaced by a keyed hash; visit reasons not read'],
+  ['analytics_raw.patient', 'public.patient', 'Only the email is read, and stored as a keyed hash'],
+  ['analytics_raw.doctor', 'public.doctor', 'Name, department, active, demo and fee; no password or contact details'],
+  ['analytics_raw.department', 'public.department', 'Name, slug and whether it is shown (when the table exists)'],
+  ['analytics_raw.doctor_schedule', 'public.docshaveschedules', 'Joined with schedule and scheduledays'],
+  ['analytics_raw.doctor_schedule', 'public.schedule', 'Working hours and break'],
+  ['analytics_raw.doctor_schedule', 'public.scheduledays', 'Working days'],
+  ['analytics_raw.diagnosis_marker', 'public.diagnose', 'Only whether a diagnosis exists; diagnosis text is not read'],
+  ['analytics_staging.appointment', 'analytics_raw.appointment', 'Typed, status codes standardised, links and diagnosis flag added'],
+  ['analytics_staging.appointment', 'analytics_raw.appointment_patient', 'First patient link per appointment and link count'],
+  ['analytics_staging.appointment', 'analytics_raw.diagnosis_marker', 'has_diagnosis flag'],
+  ['analytics_staging.doctor', 'analytics_raw.doctor', 'Typed and hashed for change detection'],
+  ['analytics_staging.department', 'analytics_raw.department', 'Or distinct doctor departments when the table is missing'],
+  ['analytics_staging.doctor_schedule', 'analytics_raw.doctor_schedule', 'Day names to ISO weekday; one-hour slots per day'],
+  ['analytics_meta.quarantine', 'analytics_staging.appointment', 'Rows failing a quarantine rule'],
+  ['analytics_warehouse.dim_department', 'analytics_staging.department', 'Upsert by name (type 1)'],
+  ['analytics_warehouse.dim_doctor', 'analytics_staging.doctor', 'Type 2 history on name, department, active, demo, fee'],
+  ['analytics_warehouse.dim_patient', 'analytics_staging.appointment', 'New pseudonymous patient keys'],
+  ['analytics_warehouse.fact_appointment', 'analytics_staging.appointment', 'Insert new, update changed, mark removed; valid rows only'],
+  ['analytics_warehouse.fact_appointment', 'analytics_warehouse.dim_doctor', 'Doctor and department version at first load'],
+  ['analytics_warehouse.fact_doctor_daily_capacity', 'analytics_staging.doctor_schedule', 'Slots per doctor per day; past days frozen'],
+  ['analytics_warehouse.fact_doctor_daily_capacity', 'analytics_warehouse.dim_doctor', 'Current doctor version; zero future slots when inactive'],
+  ['analytics_marts.appointments', 'analytics_warehouse.fact_appointment', 'Joined with all dimensions'],
+  ['analytics_marts.daily_department_operations', 'analytics_warehouse.fact_appointment', 'Daily counts per department'],
+  ['analytics_marts.daily_department_operations', 'analytics_warehouse.fact_doctor_daily_capacity', 'Daily slots per department'],
+  ['analytics_marts.weekly_department_demand', 'analytics_warehouse.fact_appointment', 'Weekly counts with zero-filled weeks'],
+  ['analytics_marts.ml_appointment_features', 'analytics_warehouse.fact_appointment', 'Point-in-time patient history features'],
+  ['analytics_ml.model_runs', 'analytics_marts.ml_appointment_features', 'Not-completed classifier training'],
+  ['analytics_ml.demand_forecast', 'analytics_marts.weekly_department_demand', 'Weekly demand forecasts'],
+  ['analytics_ml.segment_profiles', 'analytics_marts.appointments', 'Patient behaviour segments (summaries only)'],
+];
+
+module.exports = { LINEAGE };

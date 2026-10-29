@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HMS Analytics</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">+</span>
+      <div><strong>HMS Analytics</strong><span>Hospital operations data platform</span></div>
+    </div>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <div class="freshness" id="freshness" aria-live="polite"></div>
+  </header>
+  <div id="dataset-banner" class="dataset-banner" hidden></div>
+  <div class="shell">
+    <nav id="nav" class="sidenav" aria-label="Analytics pages">
+      <a href="#overview" data-page="overview">Executive overview</a>
+      <a href="#departments" data-page="departments">Departments</a>
+      <a href="#doctors" data-page="doctors">Doctor workload</a>
+      <a href="#flow" data-page="flow">Appointments and patients</a>
+      <a href="#financial" data-page="financial">Financial</a>
+      <a href="#forecasts" data-page="forecasts">Forecasts and models</a>
+      <a href="#quality" data-page="quality">Data quality and pipeline</a>
+      <a href="#definitions" data-page="definitions">KPI definitions</a>
+    </nav>
+    <main id="main" tabindex="-1">
+      <form id="filters" class="filters" aria-label="Filters">
+        <label>From <input type="date" name="from" required></label>
+        <label>To <input type="date" name="to" required></label>
+        <label>Department <select name="department"><option value="">All departments</option></select></label>
+        <label>Doctor <select name="doctor"><option value="">All doctors</option></select></label>
+        <label>Status
+          <select name="status">
+            <option value="">All statuses</option>
+            <option value="completed">Completed</option>
+            <option value="scheduled">Upcoming</option>
+            <option value="unresolved">Not completed</option>
+            <option value="removed">Removed</option>
+          </select>
+        </label>
+        <button type="submit" class="btn">Apply</button>
+      </form>
+      <div id="view" aria-live="polite"></div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
